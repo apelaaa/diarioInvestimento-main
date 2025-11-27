@@ -303,9 +303,8 @@ Percentual = (Lucro/Prejuízo ÷ Total Investido) × 100
 
 ## Integrantes
 
-- **Luis Henrique dos Santos Abrantes**
-- **Isaque Estolano**
-- **Cauã Almeida Moura**
+- **Guilherme da Silva Conceição**
+- **Amanda Prado**
 - **Gustavo Macedo**
 - **Luiz Fernando Paiva Borges**
 
