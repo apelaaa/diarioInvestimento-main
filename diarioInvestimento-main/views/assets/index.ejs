@@ -1,0 +1,204 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+        <div>
+            <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">Meus Ativos</h1>
+            <p class="text-slate-400 text-sm">Gerencie sua carteira de investimentos</p>
+        </div>
+        <a href="/assets/create" class="group inline-flex items-center justify-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-5 py-3 rounded-xl font-medium shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
+            <i class="fas fa-plus group-hover:rotate-90 transition-transform duration-300"></i>
+            <span>Novo Ativo</span>
+        </a>
+    </div>
+
+    <% if (assets && assets.length > 0) { %>
+        <!-- Desktop Table View -->
+        <div class="hidden md:block bg-slate-800/50 border border-slate-700 rounded-2xl shadow-xl overflow-hidden backdrop-blur-sm">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-900/50 text-xs uppercase text-slate-400 font-semibold border-b border-slate-700">
+                        <tr>
+                            <th class="px-6 py-4">Ativo</th>
+                            <th class="px-6 py-4">Tipo</th>
+                            <th class="px-6 py-4 text-right">Qtd</th>
+                            <th class="px-6 py-4 text-right">Preço Médio</th>
+                            <th class="px-6 py-4 text-right">Preço Atual</th>
+                            <th class="px-6 py-4 text-right">Valor Atual</th>
+                            <th class="px-6 py-4 text-right">Lucro/Prejuízo</th>
+                            <th class="px-6 py-4 text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-700">
+                        <% assets.forEach(asset => { %>
+                            <tr class="group hover:bg-slate-700/30 transition-all duration-200">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-10 h-10 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-xl flex items-center justify-center font-bold text-blue-400 group-hover:scale-110 transition-transform">
+                                            <%= asset.symbol.substring(0, 2) %>
+                                        </div>
+                                        <div>
+                                            <div class="font-medium text-white"><%= asset.name %></div>
+                                            <div class="text-xs text-slate-400"><%= asset.symbol %></div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium
+                                        <% if (asset.type === 'Ação') { %>
+                                            bg-blue-500/10 text-blue-400 border border-blue-500/20
+                                        <% } else if (asset.type === 'FII') { %>
+                                            bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
+                                        <% } else if (asset.type === 'Cripto') { %>
+                                            bg-purple-500/10 text-purple-400 border border-purple-500/20
+                                        <% } else { %>
+                                            bg-slate-500/10 text-slate-400 border border-slate-500/20
+                                        <% } %>
+                                    ">
+                                        <%= asset.type %>
+                                    </span>
+                                </td>
+                                <td class="px-6 py-4 text-right font-medium text-slate-300">
+                                    <%= asset.quantity || 0 %>
+                                </td>
+                                <td class="px-6 py-4 text-right font-medium text-slate-300">
+                                    R$ <%= asset.quantity > 0 ? (asset.totalCost / asset.quantity).toFixed(2) : '0.00' %>
+                                </td>
+                                <td class="px-6 py-4 text-right font-medium <%= asset.currentPrice ? 'text-blue-400' : 'text-slate-400' %>">
+                                    <% if (asset.currentPrice) { %>
+                                        R$ <%= asset.currentPrice.toFixed(2) %>
+                                        <% if (asset.priceChange) { %>
+                                            <div class="text-xs <%= asset.priceChange >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
+                                                <%= asset.priceChange >= 0 ? '+' : '' %><%= asset.priceChange.toFixed(2) %>%
+                                            </div>
+                                        <% } %>
+                                    <% } else { %>
+                                        --
+                                    <% } %>
+                                </td>
+                                <td class="px-6 py-4 text-right font-semibold text-white">
+                                    R$ <%= (asset.currentValue || 0).toFixed(2) %>
+                                </td>
+                                <td class="px-6 py-4 text-right font-bold <%= asset.profitLoss >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
+                                    <%= asset.profitLoss >= 0 ? '+' : '' %>R$ <%= (asset.profitLoss || 0).toFixed(2) %>
+                                    <div class="text-xs">
+                                        (<%= asset.profitLoss >= 0 ? '+' : '' %><%= (asset.profitLossPct || 0).toFixed(2) %>%)
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <a href="/assets/<%= asset.id %>/edit" class="group/btn p-2 hover:bg-blue-500/10 rounded-lg transition-all duration-200" title="Editar">
+                                            <i class="fas fa-edit text-blue-400 group-hover/btn:scale-110 transition-transform"></i>
+                                        </a>
+                                        <form action="/assets/<%= asset.id %>?_method=DELETE" method="POST" class="inline" onsubmit="return confirm('Tem certeza que deseja excluir este ativo?')">
+                                            <button type="submit" class="group/btn p-2 hover:bg-red-500/10 rounded-lg transition-all duration-200" title="Excluir">
+                                                <i class="fas fa-trash text-red-400 group-hover/btn:scale-110 transition-transform"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Mobile Card View -->
+        <div class="md:hidden space-y-4">
+            <% assets.forEach(asset => { %>
+                <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-5 shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-xl flex items-center justify-center font-bold text-blue-400 text-sm">
+                                <%= asset.symbol.substring(0, 2) %>
+                            </div>
+                            <div>
+                                <div class="font-semibold text-white"><%= asset.name %></div>
+                                <div class="text-xs text-slate-400"><%= asset.symbol %></div>
+                            </div>
+                        </div>
+                        <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                            <% if (asset.type === 'Ação') { %>
+                                bg-blue-500/10 text-blue-400 border border-blue-500/20
+                            <% } else if (asset.type === 'FII') { %>
+                                bg-emerald-500/10 text-emerald-400 border border-emerald-500/20
+                            <% } else if (asset.type === 'Cripto') { %>
+                                bg-purple-500/10 text-purple-400 border border-purple-500/20
+                            <% } else { %>
+                                bg-slate-500/10 text-slate-400 border border-slate-500/20
+                            <% } %>
+                        ">
+                            <%= asset.type %>
+                        </span>
+                    </div>
+                    
+                    <div class="grid grid-cols-2 gap-3 mb-4">
+                        <div class="bg-slate-900/30 rounded-lg p-3">
+                            <div class="text-xs text-slate-400 mb-1">Quantidade</div>
+                            <div class="font-semibold text-white"><%= asset.quantity || 0 %></div>
+                        </div>
+                        <div class="bg-slate-900/30 rounded-lg p-3">
+                            <div class="text-xs text-slate-400 mb-1">Preço Médio</div>
+                            <div class="font-semibold text-white">R$ <%= asset.quantity > 0 ? (asset.totalCost / asset.quantity).toFixed(2) : '0.00' %></div>
+                        </div>
+                        <div class="bg-slate-900/30 rounded-lg p-3">
+                            <div class="text-xs text-slate-400 mb-1">Preço Atual</div>
+                            <div class="font-semibold <%= asset.currentPrice ? 'text-blue-400' : 'text-slate-400' %>">
+                                <% if (asset.currentPrice) { %>
+                                    R$ <%= asset.currentPrice.toFixed(2) %>
+                                <% } else { %>
+                                    --
+                                <% } %>
+                            </div>
+                        </div>
+                        <div class="bg-slate-900/30 rounded-lg p-3">
+                            <div class="text-xs text-slate-400 mb-1">Valor Atual</div>
+                            <div class="font-semibold text-white">R$ <%= (asset.currentValue || 0).toFixed(2) %></div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gradient-to-r from-<%= asset.profitLoss >= 0 ? 'emerald' : 'red' %>-500/10 to-<%= asset.profitLoss >= 0 ? 'emerald' : 'red' %>-500/5 border border-<%= asset.profitLoss >= 0 ? 'emerald' : 'red' %>-500/20 rounded-lg p-3 mb-4">
+                        <div class="text-xs text-slate-400 mb-1">Lucro/Prejuízo</div>
+                        <div class="text-lg font-bold <%= asset.profitLoss >= 0 ? 'text-emerald-400' : 'text-red-400' %>">
+                            <%= asset.profitLoss >= 0 ? '+' : '' %>R$ <%= (asset.profitLoss || 0).toFixed(2) %>
+                            <span class="text-sm">(<%= asset.profitLoss >= 0 ? '+' : '' %><%= (asset.profitLossPct || 0).toFixed(2) %>%)</span>
+                        </div>
+                    </div>
+                    
+                    <div class="flex gap-2">
+                        <a href="/assets/<%= asset.id %>/edit" class="flex-1 flex items-center justify-center gap-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 border border-blue-500/20">
+                            <i class="fas fa-edit"></i>
+                            <span>Editar</span>
+                        </a>
+                        <form action="/assets/<%= asset.id %>?_method=DELETE" method="POST" class="flex-1" onsubmit="return confirm('Tem certeza que deseja excluir este ativo?')">
+                            <button type="submit" class="w-full flex items-center justify-center gap-2 bg-red-500/10 hover:bg-red-500/20 text-red-400 px-4 py-2.5 rounded-xl font-medium transition-all duration-200 border border-red-500/20">
+                                <i class="fas fa-trash"></i>
+                                <span>Excluir</span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <!-- Empty State -->
+        <div class="flex flex-col items-center justify-center py-16 px-4">
+            <div class="mb-6 animate-bounce-slow">
+                <div class="w-24 h-24 bg-gradient-to-br from-slate-700 to-slate-800 rounded-3xl flex items-center justify-center">
+                    <i class="fas fa-wallet text-4xl text-slate-500"></i>
+                </div>
+            </div>
+            <h3 class="text-xl font-bold text-white mb-2">Nenhum ativo cadastrado</h3>
+            <p class="text-slate-400 text-center mb-6 max-w-md">
+                Comece adicionando seu primeiro ativo para começar a acompanhar seus investimentos
+            </p>
+            <a href="/assets/create" class="group inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white px-6 py-3 rounded-xl font-medium shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105">
+                <i class="fas fa-plus group-hover:rotate-90 transition-transform duration-300"></i>
+                <span>Adicionar Primeiro Ativo</span>
+            </a>
+        </div>
+    <% } %>
+</div>
+
+<%- include('../partials/footer') %>

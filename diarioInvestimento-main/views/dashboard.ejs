@@ -1,0 +1,183 @@
+<%- include('partials/header') %>
+
+<div class="container mx-auto px-4 py-6">
+    <% if (user) { %>
+        <!-- Welcome Section -->
+        <div class="mb-8 animate-fade-in">
+            <h1 class="text-3xl md:text-4xl font-bold text-white mb-2">Bem-vindo de volta, <%= user.name.split(' ')[0] %>! 👋</h1>
+            <p class="text-slate-400 text-sm md:text-base">Aqui está um resumo da sua carteira de investimentos</p>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8">
+            <!-- Total Investido Card -->
+            <div class="group relative bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 rounded-full blur-3xl group-hover:bg-blue-500/20 transition-all duration-300"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h5 class="text-slate-400 font-medium text-sm">Total Investido</h5>
+                        <div class="p-3 bg-blue-500/10 rounded-xl group-hover:bg-blue-500/20 transition-colors duration-300">
+                            <i class="fas fa-coins text-blue-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">
+                        <% if (portfolioData) { %>
+                            R$ <%= portfolioData.totalInvested %>
+                        <% } else { %>
+                            R$ --
+                        <% } %>
+                    </h2>
+                    <p class="text-xs text-slate-500 flex items-center gap-1">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Custo de aquisição</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Valor Atual Card -->
+            <div class="group relative bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl group-hover:bg-emerald-500/20 transition-all duration-300"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h5 class="text-slate-400 font-medium text-sm">Valor Atual</h5>
+                        <div class="p-3 bg-emerald-500/10 rounded-xl group-hover:bg-emerald-500/20 transition-colors duration-300">
+                            <i class="fas fa-chart-pie text-emerald-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold text-white mb-2">
+                        <% if (portfolioData) { %>
+                            R$ <%= portfolioData.totalCurrentValue %>
+                        <% } else { %>
+                            R$ --
+                        <% } %>
+                    </h2>
+                    <p class="text-xs text-slate-500 flex items-center gap-1">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Valor de mercado</span>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Lucro/Prejuízo Card -->
+            <div class="group relative bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 shadow-xl hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 overflow-hidden sm:col-span-2 lg:col-span-1">
+                <div class="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full blur-3xl group-hover:bg-amber-500/20 transition-all duration-300"></div>
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <h5 class="text-slate-400 font-medium text-sm">Lucro/Prejuízo</h5>
+                        <div class="p-3 bg-amber-500/10 rounded-xl group-hover:bg-amber-500/20 transition-colors duration-300">
+                            <i class="fas fa-chart-line text-amber-400 text-xl"></i>
+                        </div>
+                    </div>
+                    <h2 class="text-2xl md:text-3xl font-bold mb-2 <% if (portfolioData && parseFloat(portfolioData.profitLoss) >= 0) { %>text-emerald-400<% } else if (portfolioData) { %>text-red-400<% } else { %>text-white<% } %>">
+                        <% if (portfolioData) { %>
+                            <% if (parseFloat(portfolioData.profitLoss) >= 0) { %>+<% } %>
+                            R$ <%= portfolioData.profitLoss %>
+                            <span class="text-sm">(<%= portfolioData.profitLossPct %>%)</span>
+                        <% } else { %>
+                            R$ --
+                        <% } %>
+                    </h2>
+                    <p class="text-xs text-slate-500 flex items-center gap-1">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Performance total</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="mb-8">
+            <h2 class="text-xl font-bold text-white mb-4 flex items-center gap-2">
+                <i class="fas fa-bolt text-amber-400"></i>
+                <span>Ações Rápidas</span>
+            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Ativos Card -->
+                <a href="/assets" class="group block relative bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-blue-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-blue-500/10 overflow-hidden">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-blue-500/5 rounded-full blur-3xl group-hover:bg-blue-500/10 transition-all duration-300"></div>
+                    <div class="relative z-10 flex items-center gap-4">
+                        <div class="p-4 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-2xl group-hover:from-blue-500/30 group-hover:to-blue-600/30 transition-all duration-300 group-hover:scale-110">
+                            <i class="fas fa-wallet text-blue-400 text-3xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-white mb-1 group-hover:text-blue-400 transition-colors">Meus Ativos</h3>
+                            <p class="text-slate-400 text-sm">Gerencie sua carteira de investimentos</p>
+                        </div>
+                        <i class="fas fa-arrow-right text-slate-500 group-hover:text-blue-400 group-hover:translate-x-1 transition-all duration-300"></i>
+                    </div>
+                </a>
+
+                <!-- Transações Card -->
+                <a href="/transactions" class="group block relative bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 hover:border-amber-500/50 transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl hover:shadow-amber-500/10 overflow-hidden">
+                    <div class="absolute top-0 right-0 w-40 h-40 bg-amber-500/5 rounded-full blur-3xl group-hover:bg-amber-500/10 transition-all duration-300"></div>
+                    <div class="relative z-10 flex items-center gap-4">
+                        <div class="p-4 bg-gradient-to-br from-amber-500/20 to-amber-600/20 rounded-2xl group-hover:from-amber-500/30 group-hover:to-amber-600/30 transition-all duration-300 group-hover:scale-110">
+                            <i class="fas fa-exchange-alt text-amber-400 text-3xl"></i>
+                        </div>
+                        <div class="flex-1">
+                            <h3 class="text-lg font-semibold text-white mb-1 group-hover:text-amber-400 transition-colors">Transações</h3>
+                            <p class="text-slate-400 text-sm">Registre compras e vendas</p>
+                        </div>
+                        <i class="fas fa-arrow-right text-slate-500 group-hover:text-amber-400 group-hover:translate-x-1 transition-all duration-300"></i>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+    <% } else { %>
+        <!-- Logged Out State -->
+        <div class="min-h-[70vh] flex items-center justify-center">
+            <div class="text-center max-w-3xl mx-auto px-4">
+                <div class="mb-8 animate-bounce-slow">
+                    <div class="inline-block p-6 bg-gradient-to-br from-blue-500/20 to-purple-600/20 rounded-3xl">
+                        <i class="fas fa-chart-line text-6xl md:text-7xl text-blue-400"></i>
+                    </div>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-bold text-white mb-4 leading-tight">
+                    Gerencie seus investimentos de forma 
+                    <span class="bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">inteligente</span>
+                </h2>
+                <p class="text-lg md:text-xl text-slate-400 mb-8 leading-relaxed">
+                    Acompanhe sua carteira, registre transações e visualize seus lucros em tempo real.
+                </p>
+                <div class="flex flex-col sm:flex-row justify-center gap-4">
+                    <a href="/auth/login" class="group px-8 py-4 bg-slate-700 hover:bg-slate-600 text-white rounded-xl font-semibold transition-all duration-300 hover:scale-105 hover:shadow-xl flex items-center justify-center gap-2">
+                        <i class="fas fa-sign-in-alt group-hover:translate-x-1 transition-transform"></i>
+                        <span>Entrar</span>
+                    </a>
+                    <a href="/auth/register" class="group px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white rounded-xl font-semibold shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 transition-all duration-300 hover:scale-105 flex items-center justify-center gap-2">
+                        <i class="fas fa-rocket group-hover:translate-y-[-2px] transition-transform"></i>
+                        <span>Criar Conta Grátis</span>
+                    </a>
+                </div>
+                
+                <!-- Features -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-16">
+                    <div class="p-6 bg-slate-800/50 border border-slate-700 rounded-xl">
+                        <div class="w-12 h-12 bg-blue-500/10 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                            <i class="fas fa-shield-alt text-blue-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-white font-semibold mb-2">Seguro</h3>
+                        <p class="text-slate-400 text-sm">Seus dados protegidos com criptografia</p>
+                    </div>
+                    <div class="p-6 bg-slate-800/50 border border-slate-700 rounded-xl">
+                        <div class="w-12 h-12 bg-emerald-500/10 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                            <i class="fas fa-chart-bar text-emerald-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-white font-semibold mb-2">Análises</h3>
+                        <p class="text-slate-400 text-sm">Visualize o desempenho da sua carteira</p>
+                    </div>
+                    <div class="p-6 bg-slate-800/50 border border-slate-700 rounded-xl">
+                        <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-4 mx-auto">
+                            <i class="fas fa-mobile-alt text-purple-400 text-xl"></i>
+                        </div>
+                        <h3 class="text-white font-semibold mb-2">Responsivo</h3>
+                        <p class="text-slate-400 text-sm">Acesse de qualquer dispositivo</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

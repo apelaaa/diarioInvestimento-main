@@ -1,0 +1,133 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-6 max-w-2xl">
+    <div class="mb-6">
+        <a href="/transactions" class="inline-flex items-center gap-2 text-slate-400 hover:text-white transition-colors mb-4">
+            <i class="fas fa-arrow-left"></i>
+            <span>Voltar para Transações</span>
+        </a>
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">Editar Transação</h1>
+        <p class="text-slate-400 text-sm">Atualize os detalhes da transação</p>
+    </div>
+
+    <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-2xl">
+        <form action="/transactions/<%= transaction.id %>?_method=PUT" method="POST" class="space-y-6">
+            <div class="space-y-2">
+                <label for="assetId" class="block text-sm font-medium text-slate-300 flex items-center gap-2">
+                    <i class="fas fa-wallet text-blue-400"></i>
+                    <span>Ativo</span>
+                </label>
+                <select 
+                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600 cursor-pointer" 
+                    id="assetId" 
+                    name="assetId" 
+                    required
+                >
+                    <% assets.forEach(asset => { %>
+                        <option value="<%= asset.id %>" <%= transaction.assetId === asset.id ? 'selected' : '' %> class="bg-slate-900">
+                            <%= asset.symbol %> - <%= asset.name %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+
+            <div class="space-y-2">
+                <label for="type" class="block text-sm font-medium text-slate-300 flex items-center gap-2">
+                    <i class="fas fa-exchange-alt text-amber-400"></i>
+                    <span>Tipo de Transação</span>
+                </label>
+                <select 
+                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600 cursor-pointer" 
+                    id="type" 
+                    name="type" 
+                    required
+                >
+                    <option value="Compra" <%= transaction.type === 'Compra' ? 'selected' : '' %> class="bg-slate-900">📈 Compra</option>
+                    <option value="Venda" <%= transaction.type === 'Venda' ? 'selected' : '' %> class="bg-slate-900">📉 Venda</option>
+                </select>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div class="space-y-2">
+                    <label for="quantity" class="block text-sm font-medium text-slate-300 flex items-center gap-2">
+                        <i class="fas fa-hashtag text-emerald-400"></i>
+                        <span>Quantidade</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600" 
+                        id="quantity" 
+                        name="quantity" 
+                        step="any" 
+                        value="<%= transaction.quantity %>" 
+                        required
+                        autocomplete="off"
+                    >
+                </div>
+
+                <div class="space-y-2">
+                    <label for="price" class="block text-sm font-medium text-slate-300 flex items-center gap-2">
+                        <i class="fas fa-dollar-sign text-purple-400"></i>
+                        <span>Valor por Unidade</span>
+                    </label>
+                    <input 
+                        type="number" 
+                        class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600" 
+                        id="price" 
+                        name="price" 
+                        step="0.01" 
+                        value="<%= transaction.price %>" 
+                        required
+                        autocomplete="off"
+                    >
+                </div>
+            </div>
+
+            <div class="space-y-2">
+                <label for="date" class="block text-sm font-medium text-slate-300 flex items-center gap-2">
+                    <i class="fas fa-calendar text-blue-400"></i>
+                    <span>Data da Transação</span>
+                </label>
+                <input 
+                    type="date" 
+                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600 cursor-pointer" 
+                    id="date" 
+                    name="date" 
+                    value="<%= transaction.date %>" 
+                    required
+                >
+            </div>
+
+            <!-- Transaction Summary -->
+            <div class="bg-slate-900/30 border border-slate-700/50 rounded-xl p-4">
+                <h3 class="text-sm font-semibold text-slate-300 mb-3 flex items-center gap-2">
+                    <i class="fas fa-calculator text-amber-400"></i>
+                    <span>Resumo da Transação</span>
+                </h3>
+                <div class="flex items-center justify-between">
+                    <span class="text-slate-400">Valor Total</span>
+                    <span class="text-xl font-bold text-white">R$ <%= (transaction.quantity * transaction.price).toFixed(2) %></span>
+                </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-slate-700">
+                <button 
+                    type="submit" 
+                    class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 bg-gradient-to-r from-amber-600 to-amber-500 hover:from-amber-500 hover:to-amber-400 text-white shadow-lg shadow-amber-500/30 hover:shadow-amber-500/50 hover:scale-105"
+                >
+                    <i class="fas fa-save group-hover:scale-110 transition-transform"></i>
+                    <span>Atualizar Transação</span>
+                </button>
+                <a 
+                    href="/transactions" 
+                    class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 hover:border-slate-500"
+                >
+                    <i class="fas fa-times"></i>
+                    <span>Cancelar</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

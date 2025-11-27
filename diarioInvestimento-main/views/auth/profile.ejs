@@ -1,0 +1,123 @@
+<%- include('../partials/header') %>
+
+<div class="container mx-auto px-4 py-6 max-w-3xl">
+    <div class="mb-6">
+        <h1 class="text-2xl md:text-3xl font-bold text-white mb-1">Meu Perfil</h1>
+        <p class="text-slate-400 text-sm">Gerencie suas informações pessoais</p>
+    </div>
+
+    <% if (success) { %>
+        <div class="bg-emerald-500/10 border border-emerald-500/50 text-emerald-400 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-fade-in">
+            <i class="fas fa-check-circle"></i>
+            <span><%= success %></span>
+        </div>
+    <% } %>
+
+    <% if (error) { %>
+        <div class="bg-red-500/10 border border-red-500/50 text-red-400 px-4 py-3 rounded-xl mb-6 flex items-center gap-2 animate-shake">
+            <i class="fas fa-exclamation-circle"></i>
+            <span><%= error %></span>
+        </div>
+    <% } %>
+
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- Profile Card -->
+        <div class="lg:col-span-1">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 shadow-xl text-center">
+                <div class="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-3xl mx-auto mb-4 shadow-lg">
+                    <%= user.name.charAt(0).toUpperCase() %>
+                </div>
+                <h2 class="text-xl font-bold text-white mb-1"><%= user.name %></h2>
+                <p class="text-slate-400 text-sm"><%= user.email %></p>
+            </div>
+        </div>
+
+        <!-- Form -->
+        <div class="lg:col-span-2">
+            <div class="bg-gradient-to-br from-slate-800 to-slate-800/50 border border-slate-700 rounded-2xl p-6 md:p-8 shadow-xl">
+                <form action="/auth/profile" method="POST" class="space-y-6">
+                    <div>
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-user-circle text-blue-400"></i>
+                            <span>Informações Pessoais</span>
+                        </h3>
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label for="name" class="block text-sm font-medium text-slate-300">Nome</label>
+                                <input 
+                                    type="text" 
+                                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600" 
+                                    id="name" 
+                                    name="name" 
+                                    value="<%= user.name %>" 
+                                    required
+                                >
+                            </div>
+                            <div class="space-y-2">
+                                <label for="email" class="block text-sm font-medium text-slate-300">Email</label>
+                                <input 
+                                    type="email" 
+                                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600" 
+                                    id="email" 
+                                    name="email" 
+                                    value="<%= user.email %>" 
+                                    required
+                                >
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t border-slate-700 pt-6">
+                        <h3 class="text-lg font-semibold text-white mb-4 flex items-center gap-2">
+                            <i class="fas fa-key text-amber-400"></i>
+                            <span>Alterar Senha</span>
+                        </h3>
+                        <p class="text-slate-400 text-sm mb-4">Deixe em branco se não quiser alterar sua senha.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="space-y-2">
+                                <label for="password" class="block text-sm font-medium text-slate-300">Nova Senha</label>
+                                <input 
+                                    type="password" 
+                                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600" 
+                                    id="password" 
+                                    name="password"
+                                    placeholder="••••••••"
+                                >
+                            </div>
+                            <div class="space-y-2">
+                                <label for="confirmPassword" class="block text-sm font-medium text-slate-300">Confirmar Nova Senha</label>
+                                <input 
+                                    type="password" 
+                                    class="w-full px-4 py-3 bg-slate-900/50 border border-slate-700 rounded-xl text-white placeholder-slate-500 focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all duration-200 hover:border-slate-600" 
+                                    id="confirmPassword" 
+                                    name="confirmPassword"
+                                    placeholder="••••••••"
+                                >
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row items-center gap-3 pt-4 border-t border-slate-700">
+                        <button 
+                            type="submit" 
+                            class="group w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-300 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:scale-105"
+                        >
+                            <i class="fas fa-save group-hover:scale-110 transition-transform"></i>
+                            <span>Salvar Alterações</span>
+                        </button>
+                        <a 
+                            href="/" 
+                            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl font-medium transition-all duration-200 bg-slate-700 hover:bg-slate-600 text-white border border-slate-600 hover:border-slate-500"
+                        >
+                            <i class="fas fa-times"></i>
+                            <span>Cancelar</span>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
